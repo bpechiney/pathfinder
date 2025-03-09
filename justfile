@@ -23,6 +23,10 @@ build:
 fmt:
   cargo fmt --all
 
+[group: 'misc']
+clean:
+  cargo clean
+
 [group: 'check']
 outdated:
   cargo outdated -R
