@@ -9,16 +9,7 @@ readonly RUSTUP_URL="https://sh.rustup.rs"
 
 function main() {
   install_rustup
-  install_homebrew
-}
-
-install_homebrew() {
-  if ! command -v brew &> /dev/null; then
-    log_info "Homebrew is not installed. Installing Homebrew..."
-    install_homebrew
-  else
-    log_info "Homebrew is already installed."
-  fi
+  install_just
 }
 
 install_just() {
@@ -31,15 +22,14 @@ install_just() {
 }
 
 install_rustup() {
+  if ! command -v brew &> /dev/null; then
+    log_error "brew is not installed."
+    exit 1
+  fi
+
   if ! command -v rustup &> /dev/null; then
     log_info "rustup is not installed. Installing rustup..."
-    local response
-    if ! response=(curl --proto '=https' --tlsv1.2 -sSf "$RUSTUP_URL"); then
-      log_error "Failed to install rustup."
-      exit 1
-    else
-     response | sh
-    fi
+    curl --proto '=https' --tlsv1.2 -sSf "$RUSTUP_URL" | sh
   else
     log_info "rustup is already installed."
   fi
