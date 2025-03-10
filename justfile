@@ -1,32 +1,49 @@
 #!/usr/bin/env just --justfile
 
-alias t := test
+default:
+  just --list
 
-[group: 'dev']
-watch +args='test':
-  cargo watch --clear --exec '{{ args }}'
+# Analyze the current package and report errors, but don't build object files.
+[group: 'check']
+check:
+  cargo check
 
- [group: 'misc']
- run:
-   cargo run
+# Display outdated Rust dependencies.
+[group: 'check']
+outdated:
+  cargo outdated -R
 
- # only run tests matching `PATTERN`
-[group: 'test']
-filter PATTERN:
-  cargo test {{PATTERN}}
+# Run the binary.
+[group: 'misc']
+run:
+	cargo run
 
+# Compile the current package.
 [group: 'misc']
 build:
   cargo build
 
-[group: 'misc']
-fmt:
-  cargo fmt --all
-
+# Remove artifacts that cargo has generated in the past.
 [group: 'misc']
 clean:
   cargo clean
 
-[group: 'check']
-outdated:
-  cargo outdated -R
+# Execute tests matching `PATTERN`.
+[group: 'test']
+filter-test PATTERN:
+  cargo test {{PATTERN}}
+
+# Execute all unit tests.
+[group: 'test']
+unit-test:
+  cargo test --lib --bin pathfinder
+
+# Formats all bin and lib files of the current crate using rustfmt.
+[group: 'quality']
+fmt:
+  cargo fmt --all
+
+# Checks a package to catch common mistakes.
+[group: 'quality']
+lint:
+  cargo clippy --all --all-targets -- --deny warnings

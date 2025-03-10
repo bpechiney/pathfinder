@@ -1,0 +1,13 @@
+appenders:
+  console:
+    kind: console
+    encoder:
+      pattern: "{h({l})} {d(%H:%M:%S%.6f)} [{T}] {m}{n}"
+    filters:
+      - kind: threshold
+        level: info
+
+root:
+  level: info
+  appenders:
+    - console
